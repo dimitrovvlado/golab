@@ -1,45 +1,28 @@
-TARGETS   ?= darwin/amd64 linux/amd64 linux/386 linux/arm linux/arm64 linux/ppc64le windows/amd64
-APP       = golab
+NAME := golab
+PKG := github.com/dimitrovvlado/$(NAME)
 
-#go options
-GO        ?= go
-PKG       := $(shell glide novendor)
-TAGS      :=
-GOFLAGS   :=
-LDFLAGS   := -w -s
-BINDIR    := $(CURDIR)/bin
+# Set any default go build tags
+BUILDTAGS :=
 
-.PHONY: all
-all: build
+# Populate version
+VERSION := $(shell cat VERSION)
+GITCOMMIT := $(shell git rev-parse --short HEAD)
+CTIMEVAR=-X $(PKG)/version.GITCOMMIT=$(GITCOMMIT) -X $(PKG)/version.VERSION=$(VERSION)
+GO_LDFLAGS=-ldflags "-w $(CTIMEVAR)"
+GO_LDFLAGS_STATIC=-ldflags "-w $(CTIMEVAR) -extldflags -static"
+
+# Set our default go compiler
+GO := go
+BINDIR := $(CURDIR)/bin
 
 .PHONY: build
-build:
-	GOBIN=$(BINDIR) $(GO) install $(GOFLAGS) -tags '$(TAGS)' -ldflags '$(LDFLAGS)'
+build: $(NAME) ## Builds a dynamic executable or package
 
-.PHONY: build-cross
-build-cross: LDFLAGS += -extldflags "-static"
-build-cross:
-	CGO_ENABLED=0 gox -parallel=3 -output="_dist/{{.OS}}-{{.Arch}}/{{.Dir}}" -osarch='$(TARGETS)' $(GOFLAGS) -tags '$(TAGS)' -ldflags '$(LDFLAGS)' $(APP)
+$(NAME): $(wildcard *.go) $(wildcard */*.go) VERSION
+	@echo "+ $@"
+	$(GO) build -tags "$(BUILDTAGS)" ${GO_LDFLAGS} -o $(NAME) .
 
-.PHONY: clean
-clean:
-	@rm -rf $(BINDIR) ./_dist
-
-HAS_GLIDE := $(shell command -v glide;)
-HAS_GOX := $(shell command -v gox;)
-HAS_GIT := $(shell command -v git;)
-
-.PHONY: bootstrap
-bootstrap:
-ifndef HAS_GLIDE
-	go get -u github.com/Masterminds/glide
-endif
-ifndef HAS_GOX
-	go get -u github.com/mitchellh/gox
-endif
-
-ifndef HAS_GIT
-	$(error You must install Git)
-endif
-	glide install --strip-vendor
-	go build -o bin/protoc-gen-go ./vendor/github.com/golang/protobuf/protoc-gen-go
+.PHONY: install
+install: ## Installs the executable or package
+	@echo "+ $@"
+	GOBIN=$(BINDIR) $(GO) install -a -tags "$(BUILDTAGS)" ${GO_LDFLAGS} .

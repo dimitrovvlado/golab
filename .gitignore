@@ -9,10 +9,6 @@
 _obj
 _test
 
-# Architecture specific extensions/prefixes
-*.[568vq]
-[568vq].out
-
 *.cgo1.go
 *.cgo2.c
 _cgo_defun.c
@@ -23,9 +19,6 @@ _testmain.go
 
 *.exe
 *.test
-
-
-###OSX###
 
 .DS_Store
 .AppleDouble
@@ -42,10 +35,8 @@ Icon
 .Spotlight-V100
 .Trashes
 
-weather
-cross/
-
-server/weather-server
+# Install folder
+bin/
 
 # Go coverage results
 coverage.txt
