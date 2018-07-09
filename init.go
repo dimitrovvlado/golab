@@ -1,9 +1,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
-	"errors"
+
 	"github.com/spf13/cobra"
 )
 
@@ -13,11 +14,11 @@ This init command will set up any necessary local configuration.
 
 type initCmd struct {
 	token string
-	out io.Writer
+	out   io.Writer
 }
 
 func newInitCommand(out io.Writer) *cobra.Command {
-	init := &initCmd {
+	init := &initCmd{
 		out: out,
 	}
 

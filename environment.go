@@ -16,6 +16,8 @@ type EnvSettings struct {
 	GitlabHost string
 	//Personal access token
 	GitlabToken string
+	//Current repository
+	Repo *git.Repository
 }
 
 //Init environment
@@ -43,7 +45,7 @@ func (s *EnvSettings) Init() {
 		if err == nil && len(remote) > 0 {
 			def = "https://" + u.Hostname()
 		}
-		url := promptForString(&promptui.Prompt{Label: "Gitlab URL: ", Default: def})
+		url := promptForString(&promptui.Prompt{Label: "Gitlab URL", Default: def})
 		gitlab.SetOption("url", url)
 
 		repo.Storer.SetConfig(config)
@@ -57,6 +59,7 @@ func (s *EnvSettings) Init() {
 	}
 	s.GitlabHost = gitlab.Option("url")
 	s.GitlabToken = gitlab.Option("token")
+	s.Repo = repo
 }
 
 func promptForString(prompt *promptui.Prompt) string {

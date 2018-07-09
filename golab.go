@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 )
 
@@ -32,6 +33,7 @@ func main() {
 }
 
 func newRootCmd(args []string) *cobra.Command {
+
 	cmd := &cobra.Command{
 		Use:          "ums",
 		Short:        "The Usage Meter Services command for merge requests.",
@@ -57,11 +59,16 @@ func newRootCmd(args []string) *cobra.Command {
 
 // CheckIfErrorAndExit should be used to naively panics if an error is not nil.
 func CheckIfErrorAndExit(err error) {
-	if err == nil {
-		return
+	if err != nil {
+		switch err {
+		case promptui.ErrInterrupt:
+			//Exit gracefully
+			os.Exit(0)
+		default:
+			fmt.Printf("\x1b[31;1m%s\x1b[0m\n", fmt.Sprintf("Error: %s", err))
+			os.Exit(1)
+		}
 	}
-	fmt.Printf("\x1b[31;1m%s\x1b[0m\n", fmt.Sprintf("error: %s", err))
-	os.Exit(1)
 }
 
 // Info should be used to describe the example commands that are about to run.
