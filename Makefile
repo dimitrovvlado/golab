@@ -26,3 +26,8 @@ $(NAME): $(wildcard *.go) $(wildcard */*.go) VERSION
 install: ## Installs the executable or package
 	@echo "+ $@"
 	GOBIN=$(BINDIR) $(GO) install -a -tags "$(BUILDTAGS)" ${GO_LDFLAGS} .
+
+.PHONY: dist
+dist: build
+	cp $(NAME) /usr/local/bin/
+	chmod +x /usr/local/bin/golab
