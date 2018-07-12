@@ -41,9 +41,6 @@ func newInitCommand(out io.Writer) *cobra.Command {
 }
 
 func (i *initCmd) run() error {
-	if len(i.token) == 0 {
-		return errors.New("--token flag is required.")
-	}
 	fmt.Println("init executed: " + i.token)
 	return nil
 }
