@@ -68,7 +68,7 @@ func (i *pushCmd) run() error {
 	if err != nil {
 		switch err {
 		case git.NoErrAlreadyUpToDate:
-			fmt.Printf("\x1b[32m%s\x1b[0m\n", fmt.Sprintf(err.Error()))
+			fmt.Printf("\x1b[32m%s\x1b[0m\n", fmt.Sprint(err.Error()))
 		default:
 			fmt.Printf("\x1b[31;1m%s\x1b[0m\n", fmt.Sprintf("Error: %s", err))
 			os.Exit(1)
