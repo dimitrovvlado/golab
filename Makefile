@@ -35,11 +35,6 @@ lint: ## Verifies `golint` passes
 	@echo "+ $@"
 	@golint ./... | grep -v '.pb.go:' | grep -v vendor | tee /dev/stderr
 
-.PHONY: test
-test: ## Runs the go tests
-	@echo "+ $@"
-	@$(GO) test -v -tags "$(BUILDTAGS) cgo" $(shell $(GO) list ./... | grep -v vendor)
-
 .PHONY: build
 build: $(NAME) ## Builds a dynamic executable or package
 

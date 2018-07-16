@@ -43,3 +43,6 @@
       - cross/golab-windows-386.md5
       - cross/golab-windows-amd64
       - cross/golab-windows-amd64.md5
+    skip_cleanup: true
+    on:
+      tags: true
